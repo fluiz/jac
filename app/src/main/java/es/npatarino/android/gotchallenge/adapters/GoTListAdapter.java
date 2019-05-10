@@ -1,4 +1,4 @@
-package es.npatarino.android.gotchallenge;
+package es.npatarino.android.gotchallenge.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
+import es.npatarino.android.gotchallenge.ui.fragments.GoTListFragment;
+import es.npatarino.android.gotchallenge.R;
 
 /**
  * Created by Admin on 15/12/2016.

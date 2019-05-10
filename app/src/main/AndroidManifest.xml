@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="es.npatarino.android.gotchallenge"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="es.npatarino.android.gotchallenge">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -11,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".DetailActivity"
-            android:parentActivityName=".HomeActivity">
+            android:name=".ui.activities.DetailActivity"
+            android:parentActivityName=".ui.activities.HomeActivity">
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".ui.activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme">
             <intent-filter>
