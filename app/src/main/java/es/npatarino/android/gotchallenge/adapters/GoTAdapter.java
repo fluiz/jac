@@ -2,8 +2,7 @@ package es.npatarino.android.gotchallenge.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,11 +26,11 @@ import es.npatarino.android.gotchallenge.model.GoTCharacter;
 public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<GoTCharacter> gcs;
-    private Activity a;
+    private Activity activity;
 
-    public GoTAdapter(Activity activity) {
+    public GoTAdapter(Activity delegateActivity) {
         this.gcs = new ArrayList<>();
-        a = activity;
+        activity = delegateActivity;
     }
 
     public void addAll(Collection<GoTCharacter> collection) {
@@ -47,7 +48,7 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         GotCharacterViewHolder gotCharacterViewHolder = (GotCharacterViewHolder) holder;
         gotCharacterViewHolder.render(gcs.get(position));
-        ((GotCharacterViewHolder) holder).imp.setOnClickListener(new View.OnClickListener() {
+        ((GotCharacterViewHolder) holder).characterImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Intent intent = new Intent(((GotCharacterViewHolder) holder).itemView.getContext(), DetailActivity.class);
@@ -67,13 +68,13 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class GotCharacterViewHolder extends RecyclerView.ViewHolder {
 
         private static final String TAG = "GotCharacterViewHolder";
-        ImageView imp;
-        TextView tvn;
+        ImageView characterImage;
+        TextView tvName;
 
         public GotCharacterViewHolder(View itemView) {
             super(itemView);
-            imp = (ImageView) itemView.findViewById(R.id.ivBackground);
-            tvn = (TextView) itemView.findViewById(R.id.tv_character_name);
+            characterImage = (ImageView) itemView.findViewById(R.id.ivBackground);
+            tvName = (TextView) itemView.findViewById(R.id.tv_character_name);
         }
 
         public void render(final GoTCharacter goTCharacter) {
@@ -83,17 +84,15 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     URL url = null;
                     try {
                         url = new URL(goTCharacter.getImageUrl());
-                        Log.i(TAG, "Name: "+goTCharacter.getName());
+                        final Uri uri = Uri.parse(url.toString());
                         //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        //imp.setImageBitmap(bmp);
-                        tvn.setText(goTCharacter.getName());
-                        Log.i(TAG, "Name set: "+tvn.getText().toString());
-                        a.runOnUiThread(new Runnable() {
+
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                //imp.setImageBitmap(bmp);
-                                tvn.setText(goTCharacter.getName());
-                                Log.i(TAG, tvn.getText().toString());
+                                //characterImage.setImageBitmap(bmp);
+                                Picasso.with(activity).load(uri).placeholder(R.mipmap.got_characters).into(characterImage);
+                                tvName.setText(goTCharacter.getName());
                             }
                         });
                     } catch (IOException e) {

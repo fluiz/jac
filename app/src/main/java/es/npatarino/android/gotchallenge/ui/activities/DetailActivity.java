@@ -2,12 +2,15 @@ package es.npatarino.android.gotchallenge.ui.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,17 +26,18 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        final AppCompatActivity thisActivity = this;
 
-        final ImageView ivp = (ImageView) findViewById(R.id.iv_photo);
+        final ImageView imageView = (ImageView) findViewById(R.id.iv_photo);
         final TextView tvn = (TextView) findViewById(R.id.tv_name);
         final TextView tvd = (TextView) findViewById(R.id.tv_description);
 
-        final String d = getIntent().getStringExtra("description");
-        final String n = getIntent().getStringExtra("name");
-        final String i = getIntent().getStringExtra("imageUrl");
+        final String description = getIntent().getStringExtra("description");
+        final String name = getIntent().getStringExtra("name");
+        final String imageUrl = getIntent().getStringExtra("imageUrl");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.t);
-        toolbar.setTitle(n);
+        toolbar.setTitle(name);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,14 +48,16 @@ public class DetailActivity extends AppCompatActivity {
             public void run() {
                 URL url = null;
                 try {
-                    url = new URL(i);
-                    final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    url = new URL(imageUrl);
+                    final Uri uri = Uri.parse(url.toString());
+                    //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                     DetailActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ivp.setImageBitmap(bmp);
-                            tvn.setText(n);
-                            tvd.setText(d);
+                            //imageView.setImageBitmap(bmp);
+                            Picasso.with(thisActivity).load(uri).placeholder(R.mipmap.got_poster).into(imageView);
+                            tvn.setText(name);
+                            tvd.setText(description);
                         }
                     });
                 } catch (IOException e) {

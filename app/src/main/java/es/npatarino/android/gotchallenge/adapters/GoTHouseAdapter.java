@@ -3,12 +3,15 @@ package es.npatarino.android.gotchallenge.adapters;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,11 +25,11 @@ import es.npatarino.android.gotchallenge.model.GoTCharacter;
 public class GoTHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<GoTCharacter.GoTHouse> gcs;
-    private Activity a;
+    private Activity activity;
 
-    public GoTHouseAdapter(Activity activity) {
+    public GoTHouseAdapter(Activity delegateActivity) {
         this.gcs = new ArrayList<>();
-        a = activity;
+        activity = delegateActivity;
     }
 
     public void addAll(Collection<GoTCharacter.GoTHouse> collection) {
@@ -54,11 +57,11 @@ public class GoTHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     class GotCharacterViewHolder extends RecyclerView.ViewHolder {
 
         private static final String TAG = "GotCharacterViewHolder";
-        ImageView imp;
+        ImageView imageView;
 
         public GotCharacterViewHolder(View itemView) {
             super(itemView);
-            imp = (ImageView) itemView.findViewById(R.id.ivBackground);
+            imageView = (ImageView) itemView.findViewById(R.id.ivBackground);
         }
 
         public void render(final GoTCharacter.GoTHouse goTHouse) {
@@ -68,11 +71,13 @@ public class GoTHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     URL url = null;
                     try {
                         url = new URL(goTHouse.getHouseImageUrl());
-                        final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        a.runOnUiThread(new Runnable() {
+                        final Uri uri = Uri.parse(url.toString());
+                        //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                imp.setImageBitmap(bmp);
+                                //imageView.setImageBitmap(bmp);
+                                Picasso.with(activity).load(uri).placeholder(R.mipmap.got_houses).into(imageView);
                             }
                         });
                     } catch (IOException e) {
