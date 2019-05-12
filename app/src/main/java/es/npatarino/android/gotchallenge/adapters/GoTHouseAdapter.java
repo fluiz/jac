@@ -1,8 +1,7 @@
 package es.npatarino.android.gotchallenge.adapters;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -21,47 +21,58 @@ import java.util.List;
 
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
+import es.npatarino.android.gotchallenge.ui.activities.HomeActivity;
 
 public class GoTHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final List<GoTCharacter.GoTHouse> gcs;
+    private final List<GoTCharacter.GoTHouse> gotHousesList;
     private Activity activity;
 
     public GoTHouseAdapter(Activity delegateActivity) {
-        this.gcs = new ArrayList<>();
+        this.gotHousesList = new ArrayList<>();
         activity = delegateActivity;
     }
 
     public void addAll(Collection<GoTCharacter.GoTHouse> collection) {
         for (int i = 0; i < collection.size(); i++) {
-            gcs.add((GoTCharacter.GoTHouse) collection.toArray()[i]);
+            gotHousesList.add((GoTCharacter.GoTHouse) collection.toArray()[i]);
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GotCharacterViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.got_house_row, parent, false));
+        return new GotHouseViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.got_house_row, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        GotCharacterViewHolder gotCharacterViewHolder = (GotCharacterViewHolder) holder;
-        gotCharacterViewHolder.render(gcs.get(position));
+        GotHouseViewHolder gotCharacterViewHolder = (GotHouseViewHolder) holder;
+        gotCharacterViewHolder.render(gotHousesList.get(position));
+        ((GotHouseViewHolder) holder).imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(((GotHouseViewHolder) holder).imageView.getContext(), HomeActivity.class);
+                intent.putExtra("house", gotHousesList.get(position).getHouseId());
+                ((GotHouseViewHolder) holder).imageView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return gcs.size();
+        return gotHousesList.size();
     }
 
-    class GotCharacterViewHolder extends RecyclerView.ViewHolder {
+    class GotHouseViewHolder extends RecyclerView.ViewHolder {
 
-        private static final String TAG = "GotCharacterViewHolder";
+        private static final String TAG = "GotHouseViewHolder";
         ImageView imageView;
+        TextView tvHouseName;
 
-        public GotCharacterViewHolder(View itemView) {
+        public GotHouseViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.ivBackground);
+            tvHouseName = (TextView) itemView.findViewById((R.id.tv_name));
         }
 
         public void render(final GoTCharacter.GoTHouse goTHouse) {
@@ -78,6 +89,7 @@ public class GoTHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             public void run() {
                                 //imageView.setImageBitmap(bmp);
                                 Picasso.with(activity).load(uri).placeholder(R.mipmap.got_houses).into(imageView);
+                                tvHouseName.setText(goTHouse.getHouseName());
                             }
                         });
                     } catch (IOException e) {

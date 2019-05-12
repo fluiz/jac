@@ -2,41 +2,17 @@ package es.npatarino.android.gotchallenge.ui.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import es.npatarino.android.gotchallenge.R;
-import es.npatarino.android.gotchallenge.adapters.GoTAdapter;
-import es.npatarino.android.gotchallenge.adapters.GoTHouseAdapter;
 import es.npatarino.android.gotchallenge.adapters.SectionsPagerAdapter;
-import es.npatarino.android.gotchallenge.model.GoTCharacter;
 
 public class HomeActivity extends AppCompatActivity {
 
-    SectionsPagerAdapter spa;
-    ViewPager vp;
+    SectionsPagerAdapter sectionsPageAdapter;
+    ViewPager viewPager;
     Toolbar toolbar;
     TabLayout tabLayout;
 
@@ -47,28 +23,28 @@ public class HomeActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setSpa(new SectionsPagerAdapter(getSupportFragmentManager()));
+        setSectionsPageAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 
-        setVp((ViewPager) findViewById(R.id.container));
-        getVp().setAdapter(getSpa());
+        setViewPager((ViewPager) findViewById(R.id.container));
+        getViewPager().setAdapter(getSectionsPageAdapter());
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(getVp());
+        tabLayout.setupWithViewPager(getViewPager());
     }
 
-    public SectionsPagerAdapter getSpa() {
-        return spa;
+    public SectionsPagerAdapter getSectionsPageAdapter() {
+        return sectionsPageAdapter;
     }
 
-    public void setSpa(SectionsPagerAdapter spa) {
-        this.spa = spa;
+    public void setSectionsPageAdapter(SectionsPagerAdapter sectionsPageAdapter) {
+        this.sectionsPageAdapter = sectionsPageAdapter;
     }
 
-    public ViewPager getVp() {
-        return vp;
+    public ViewPager getViewPager() {
+        return viewPager;
     }
 
-    public void setVp(ViewPager vp) {
-        this.vp = vp;
+    public void setViewPager(ViewPager viewPager) {
+        this.viewPager = viewPager;
     }
 }

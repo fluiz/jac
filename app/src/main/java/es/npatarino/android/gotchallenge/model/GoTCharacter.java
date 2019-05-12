@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Nicolás Patarino on 21/02/16.
  */
-public class GoTCharacter {
+public class GoTCharacter extends GoTEntity {
 
     @SerializedName("name")
     private String name;
@@ -71,7 +71,7 @@ public class GoTCharacter {
     /**
      * Created by Nicolás Patarino on 21/02/16.
      */
-    public static class GoTHouse {
+    public static class GoTHouse extends GoTEntity {
 
         @SerializedName("houseImageUrl")
         String houseImageUrl;

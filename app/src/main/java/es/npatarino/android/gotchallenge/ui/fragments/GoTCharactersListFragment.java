@@ -25,11 +25,13 @@ import javax.net.ssl.HttpsURLConnection;
 
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.adapters.GoTAdapter;
+import es.npatarino.android.gotchallenge.adapters.GoTListAdapter;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
+import es.npatarino.android.gotchallenge.model.GoTEntity;
 
 public class GoTCharactersListFragment extends Fragment {
 
-    private static final String TAG = "GoTListFragment";
+    private static final String TAG = "GoTCharsListFragment";
 
     public GoTCharactersListFragment() {
     }
@@ -40,7 +42,8 @@ public class GoTCharactersListFragment extends Fragment {
         final ContentLoadingProgressBar pb = (ContentLoadingProgressBar) rootView.findViewById(R.id.pb);
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
 
-        final GoTAdapter adp = new GoTAdapter(getActivity());
+        //final GoTAdapter adp = new GoTAdapter(getActivity());
+        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Characters, getContext());
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
         rv.setAdapter(adp);
@@ -66,7 +69,7 @@ public class GoTCharactersListFragment extends Fragment {
 
                     Type listType = new TypeToken<ArrayList<GoTCharacter>>() {
                     }.getType();
-                    final List<GoTCharacter> characters = new Gson().fromJson(response.toString(), listType);
+                    final List<GoTEntity> characters = new Gson().fromJson(response.toString(), listType);
                     GoTCharactersListFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

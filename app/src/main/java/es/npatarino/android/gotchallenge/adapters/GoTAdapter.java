@@ -33,12 +33,13 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         activity = delegateActivity;
     }
 
-    public void addAll(Collection<GoTCharacter> collection) {
+    /*public void addAll(Collection<GoTCharacter> collection) {
         for (int i = 0; i < collection.size(); i++) {
             gcs.add((GoTCharacter) collection.toArray()[i]);
         }
-    }
+    }*/
 
+    //Done
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new GotCharacterViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.got_character_row, parent, false));
@@ -60,6 +61,7 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
+    //Done
     @Override
     public int getItemCount() {
         return gcs.size();
@@ -74,7 +76,7 @@ public class GoTAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public GotCharacterViewHolder(View itemView) {
             super(itemView);
             characterImage = (ImageView) itemView.findViewById(R.id.ivBackground);
-            tvName = (TextView) itemView.findViewById(R.id.tv_character_name);
+            tvName = (TextView) itemView.findViewById(R.id.tv_name);
         }
 
         public void render(final GoTCharacter goTCharacter) {

@@ -25,7 +25,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.adapters.GoTHouseAdapter;
+import es.npatarino.android.gotchallenge.adapters.GoTListAdapter;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
+import es.npatarino.android.gotchallenge.model.GoTEntity;
 
 public class GoTHousesListFragment extends Fragment {
 
@@ -40,9 +42,10 @@ public class GoTHousesListFragment extends Fragment {
         final ContentLoadingProgressBar pb = (ContentLoadingProgressBar) rootView.findViewById(R.id.pb);
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
 
-        final GoTHouseAdapter adp = new GoTHouseAdapter(getActivity());
+        //final GoTHouseAdapter adp = new GoTHouseAdapter(getActivity());
+        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Houses, getContext());
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rv.setHasFixedSize(true);
+        rv.setHasFixedSize(false);
         rv.setAdapter(adp);
 
         new Thread(new Runnable() {
@@ -69,11 +72,12 @@ public class GoTHousesListFragment extends Fragment {
                     GoTHousesListFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ArrayList<GoTCharacter.GoTHouse> hs = new ArrayList<GoTCharacter.GoTHouse>();
+                            ArrayList<GoTEntity> hs = new ArrayList<>();
                             for (int i = 0; i < characters.size(); i++) {
                                 boolean b = false;
                                 for (int j = 0; j < hs.size(); j++) {
-                                    if (hs.get(j).getHouseName().equalsIgnoreCase(characters.get(i).getHouseName())) {
+                                    GoTCharacter.GoTHouse gotHouse = (GoTCharacter.GoTHouse) hs.get(j);
+                                    if (gotHouse.getHouseName().equalsIgnoreCase(characters.get(i).getHouseName())) {
                                         b = true;
                                     }
                                 }
