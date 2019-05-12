@@ -28,21 +28,6 @@ public class GoTEntityUtils {
         return url;
     }
 
-    @Nullable
-    public static String getGoTEntityName(GoTEntity gotEntity) {
-        String name = null;
-
-        if (gotEntity instanceof GoTCharacter) {
-            GoTCharacter gotChar = (GoTCharacter) gotEntity;
-            name = gotChar.getName();
-        } else {
-            GoTCharacter.GoTHouse goTHouse = (GoTCharacter.GoTHouse) gotEntity;
-            name = goTHouse.getHouseName();
-        }
-
-        return name;
-    }
-
     @NonNull
     public static List<GoTEntity> filterCharactersByHouse(List<GoTEntity> characters, String houseId) {
         List<GoTEntity> filteredCharacters = new ArrayList<>();

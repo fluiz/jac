@@ -32,17 +32,6 @@ public class GoTDataSource {
         }.getType();
 
         getDataList(listType, GoTListFragment.ListType.Characters, callback);
-
-        /*List<GoTEntity> characters = new ArrayList<>();
-        try {
-            characters = getDataList(listType).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return characters;*/
     }
 
     @NonNull
@@ -51,17 +40,6 @@ public class GoTDataSource {
         }.getType();
 
         getDataList(listType, GoTListFragment.ListType.Houses, callback);
-
-        /*List<GoTEntity> houses = new ArrayList<>();
-        try {
-            houses = getDataList(listType).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return houses;*/
     }
 
     private static void getDataList(@NonNull final Type classType, @NonNull final GoTListFragment.ListType entityType, @NonNull final GoTResultsInterface callback) {
@@ -85,7 +63,6 @@ public class GoTDataSource {
                     Type listType = new TypeToken<ArrayList<GoTCharacter>>() {
                     }.getType();
                     List<GoTEntity> entitiesList = new Gson().fromJson(response.toString(), listType);
-                    //entities.complete(entitiesList);
                     
                     if (entityType == GoTListFragment.ListType.Houses) {
                         ArrayList<GoTEntity> hs = new ArrayList<>();
@@ -120,37 +97,4 @@ public class GoTDataSource {
             }
         }).start();
     }
-
-    /*private static CompletableFuture<List<GoTEntity>> getDataList(final Type listType) {
-        final CompletableFuture<List<GoTEntity>> entities = new CompletableFuture<>();
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                URL obj = null;
-                try {
-                    obj = new URL(apiUrl);
-                    HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-                    con.setRequestMethod("GET");
-                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    Type listType = new TypeToken<ArrayList<GoTCharacter>>() {
-                    }.getType();
-                    List<GoTEntity> entitiesList = new Gson().fromJson(response.toString(), listType);
-                    entities.complete(entitiesList);
-                } catch (IOException e) {
-                    Log.e(TAG, e.getLocalizedMessage());
-                }
-            }
-        }).start();
-
-        return entities;
-    }*/
 }
