@@ -1,11 +1,11 @@
 package es.npatarino.android.gotchallenge.adapters;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +25,6 @@ import java.util.List;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.ui.activities.DetailActivity;
-import es.npatarino.android.gotchallenge.ui.activities.HomeActivity;
 import es.npatarino.android.gotchallenge.ui.fragments.GoTListFragment;
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
@@ -37,13 +36,13 @@ import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
 public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     GoTListFragment.ListType type;
-    Context context;
+    Fragment callingFragment;
 
    private List<GoTEntity> gotEntities;
 
-    public GoTListAdapter(GoTListFragment.ListType type, Context context){
+    public GoTListAdapter(GoTListFragment.ListType type, Fragment fragment){
         this.type = type;
-        this.context = context;
+        this.callingFragment = fragment;
         gotEntities = new ArrayList<>();
     }
 
@@ -99,17 +98,12 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Intent intent = new Intent(gotViewHolder.itemView.getContext(), HomeActivity.class);
                     GoTCharacter.GoTHouse gotHouse = (GoTCharacter.GoTHouse) gotEntities.get(holder.getAdapterPosition());
-                    //intent.putExtra("house_id", gotHouse.getHouseId());
-                    //gotViewHolder.itemView.getContext().startActivity(intent);
-                    //GoTListFragment listFragment = (GoTListFragment) ((Activity) context).getFragmentManager().findFragmentById(R.id.container);
                     GoTListFragment listFragment = GoTListFragment.newInstance(GoTListFragment.ListType.Characters, gotHouse.getHouseId());
-                    ((AppCompatActivity) context)
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.container, listFragment)
-                            .commitAllowingStateLoss();
+                    FragmentManager cfm = callingFragment.getChildFragmentManager();
+                    cfm.popBackStack();
+                    cfm.beginTransaction().add(R.id.fragment_list, listFragment).commitAllowingStateLoss();
+
                 }
             };
         }
@@ -150,7 +144,7 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         final Uri uri = Uri.parse(url.toString());
                         //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                        final Activity activity = (Activity) context;
+                        final Activity activity = callingFragment.getActivity();
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

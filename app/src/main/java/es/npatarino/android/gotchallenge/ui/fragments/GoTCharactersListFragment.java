@@ -43,7 +43,7 @@ public class GoTCharactersListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
 
         //final GoTAdapter adp = new GoTAdapter(getActivity());
-        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Characters, getContext());
+        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Characters, this);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
         rv.setAdapter(adp);

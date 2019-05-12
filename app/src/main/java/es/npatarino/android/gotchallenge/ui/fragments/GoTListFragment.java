@@ -1,9 +1,11 @@
 package es.npatarino.android.gotchallenge.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +21,7 @@ import es.npatarino.android.gotchallenge.api.GoTDataSource;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
+import es.npatarino.android.gotchallenge.ui.activities.DetailActivity;
 import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
 
 
@@ -28,6 +31,8 @@ public class GoTListFragment extends Fragment {
 
     private static final String TYPE_LIST = "type_list";
     private static final String HOUSE_ID = "house_id";
+
+    GoTListAdapter gotListAdapter;
 
     public enum ListType{
         Characters,
@@ -54,6 +59,7 @@ public class GoTListFragment extends Fragment {
             showOnlyHouseId = getArguments().getString(HOUSE_ID);
             Log.i(TAG, "House to show: "+ showOnlyHouseId);
         }
+        gotListAdapter = new GoTListAdapter(currentListDisplayed, this);
     }
 
     @Override
@@ -122,7 +128,7 @@ public class GoTListFragment extends Fragment {
 
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv);
 
-        final GoTListAdapter gotListAdapter = new GoTListAdapter(currentListDisplayed, getContext());
+        final GoTListAdapter gotListAdapter = new GoTListAdapter(currentListDisplayed, this);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(false);
         rv.setAdapter(gotListAdapter);
@@ -153,6 +159,8 @@ public class GoTListFragment extends Fragment {
             }
         };
 
+        //view.findViewById(R.id.ivBackground).setOnClickListener();
+
         //List<GoTEntity> gotEntitiesCandidates;
         if (currentListDisplayed == ListType.Characters) {
             GoTDataSource.getCharacters(gotResultsInterface);
@@ -172,4 +180,39 @@ public class GoTListFragment extends Fragment {
         });*/
 
     }
+
+    /*private View.OnClickListener getOnClickListener() {
+        View.OnClickListener listener;
+        if (currentListDisplayed == GoTListFragment.ListType.Characters) {
+            listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), DetailActivity.class);
+                    GoTCharacter gotChar = ((GoTCharacter) gotEntities.get(holder.getAdapterPosition()));
+                    gotListAdapter.get
+                    intent.putExtra("description", gotChar.getDescription());
+                    intent.putExtra("name", gotChar.getName());
+                    intent.putExtra("imageUrl", gotChar.getImageUrl());
+                    gotViewHolder.itemView.getContext().startActivity(intent);
+                }
+            };
+        } else {
+            listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Intent intent = new Intent(gotViewHolder.itemView.getContext(), HomeActivity.class);
+                    GoTCharacter.GoTHouse gotHouse = (GoTCharacter.GoTHouse) gotEntities.get(holder.getAdapterPosition());
+                    //intent.putExtra("house_id", gotHouse.getHouseId());
+                    //gotViewHolder.itemView.getContext().startActivity(intent);
+                    //GoTListFragment listFragment = (GoTListFragment) ((Activity) context).getFragmentManager().findFragmentById(R.id.container);
+                    GoTListFragment listFragment = GoTListFragment.newInstance(GoTListFragment.ListType.Characters, gotHouse.getHouseId());
+                    ((AppCompatActivity) context)
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_list, listFragment)
+                            .commitAllowingStateLoss();
+                }
+            };
+        }
+    }*/
 }

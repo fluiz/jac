@@ -43,7 +43,7 @@ public class GoTHousesListFragment extends Fragment {
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv);
 
         //final GoTHouseAdapter adp = new GoTHouseAdapter(getActivity());
-        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Houses, getContext());
+        final GoTListAdapter adp = new GoTListAdapter(GoTListFragment.ListType.Houses, this);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(false);
         rv.setAdapter(adp);
