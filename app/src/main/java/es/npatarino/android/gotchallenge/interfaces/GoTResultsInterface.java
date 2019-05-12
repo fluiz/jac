@@ -6,5 +6,6 @@ import es.npatarino.android.gotchallenge.model.GoTEntity;
 
 public interface GoTResultsInterface {
     void onSuccess(List<GoTEntity> entities);
+    void onResult(String result);
     void onFailure();
 }

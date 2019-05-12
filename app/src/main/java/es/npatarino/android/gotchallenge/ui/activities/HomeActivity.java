@@ -5,11 +5,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.adapters.SectionsPagerAdapter;
 
 public class HomeActivity extends AppCompatActivity {
+
+    private static String TAG = "HomeActivity";
 
     SectionsPagerAdapter sectionsPageAdapter;
     ViewPager viewPager;

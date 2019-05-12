@@ -17,6 +17,7 @@ import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.adapters.GoTListAdapter;
 import es.npatarino.android.gotchallenge.api.GoTDataSource;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
 
@@ -78,7 +79,7 @@ public class GoTListFragment extends Fragment {
         rv.setHasFixedSize(false);
         rv.setAdapter(gotListAdapter);
 
-        GoTResultsInterface gotResultsInterface = new GoTResultsInterface() {
+        GoTResultsInterface gotResultsInterface = new GoTResultsInterfaceImpl() {
             @Override
             public void onSuccess(List<GoTEntity> entities) {
                 final List<GoTEntity> gotEntities = entities;
@@ -96,11 +97,6 @@ public class GoTListFragment extends Fragment {
                         progressBar.hide();
                     }
                 });
-            }
-
-            @Override
-            public void onFailure() {
-
             }
         };
 

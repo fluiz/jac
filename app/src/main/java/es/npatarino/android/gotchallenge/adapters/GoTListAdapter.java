@@ -1,7 +1,6 @@
 package es.npatarino.android.gotchallenge.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -13,15 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.ui.activities.DetailActivity;
@@ -59,20 +57,10 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == 1) {
             itemView = LayoutInflater.from (parent.getContext()).
                     inflate (R.layout.got_character_row, parent, false);
-
-            /*
-          GotCharacterViewHolder vh = new GotCharacterViewHolder (itemView);
-            return vh;
-            */
         }
         else {
             itemView = LayoutInflater.from (parent.getContext()).
                     inflate (R.layout.got_house_row, parent, false);
-
-            /*
-          GotHouseViewHolder vh = new GotHouseViewHolder (itemView);
-            return vh;
-            */
         }
         return new GotViewHolder(itemView);
     }
@@ -144,24 +132,45 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         final Uri uri = Uri.parse(url.toString());
                         //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                        final Activity activity = callingFragment.getActivity();
-                        activity.runOnUiThread(new Runnable() {
+                        final int placeholder;
+                        String name;
+                        if (type == 1) {
+                            placeholder = R.mipmap.got_characters;
+                            name = ((GoTCharacter) gotEntity).getName();
+                        } else {
+                            placeholder = R.mipmap.got_houses;
+                            name = ((GoTCharacter.GoTHouse) gotEntity).getHouseName();
+                        }
+                        final String entityName = name;
+                        GoTEntityUtils.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
                             @Override
-                            public void run() {
-                                //characterImage.setImageBitmap(bmp);
-                                int placeholder;
-                                String name;
-                                if (type == 1) {
-                                    placeholder = R.mipmap.got_characters;
-                                    name = ((GoTCharacter) gotEntity).getName();
-                                } else {
-                                    placeholder = R.mipmap.got_houses;
-                                    name = ((GoTCharacter.GoTHouse) gotEntity).getHouseName();
-                                }
-                                Picasso.with(activity).load(uri).placeholder(placeholder).into(imageView);
-                                tvName.setText(name);
+                            public void onResult(final String result) {
+                                final Activity activity = callingFragment.getActivity();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Picasso.with(activity).load(uri).into(imageView, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                            }
+
+                                            @Override
+                                            public void onError() {
+                                                Picasso.with(activity)
+                                                        .load(Uri.parse(result))
+                                                        .fit()
+                                                        .centerCrop()
+                                                        .placeholder(placeholder)
+                                                        .into(imageView);
+                                            }
+                                        });
+                                        tvName.setText(entityName);
+                                    }
+                                });
                             }
                         });
+
                     } catch (IOException e) {
                         Log.e(TAG, e.getLocalizedMessage());
                     }
@@ -169,22 +178,4 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }).start();
         }
     }
-
-    /*
-    class GotCharacterViewHolder extends GotViewHolder {
-
-        private static final String TAG = "GotCharacterViewHolder";
-        public GotCharacterViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    class GotHouseViewHolder extends RecyclerView.ViewHolder {
-
-        private static final String TAG = "GotHouseViewHolder";
-        public GotHouseViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-    */
 }
