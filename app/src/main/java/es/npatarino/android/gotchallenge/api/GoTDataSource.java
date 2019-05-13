@@ -26,23 +26,23 @@ import java.util.Random;
 import javax.net.ssl.HttpsURLConnection;
 
 import es.npatarino.android.gotchallenge.db.GoTDataBase;
+import es.npatarino.android.gotchallenge.interfaces.GoTResults;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
-import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.ui.fragments.GoTListFragment;
+import es.npatarino.android.gotchallenge.util.Constants;
 
 public class GoTDataSource {
 
     final private static String TAG = "GoTDataSource";
-    final private static String apiUrl = "https://project-8424324399725905479.firebaseio.com/characters.json?print=pretty";
 
     @NonNull
-    public static void getCharacters(@NonNull final Context context, @NonNull final GoTResultsInterface callback) {
+    public static void getCharacters(@NonNull final Context context, @NonNull final GoTResults callback) {
         Type listType = new TypeToken<ArrayList<GoTCharacter>>() {
         }.getType();
 
-        getDataList(listType, GoTListFragment.ListType.Characters, new GoTResultsInterfaceImpl() {
+        getDataList(listType, GoTListFragment.ListType.Characters, new GoTResultsInterface() {
             @Override
             public void onSuccess(List<GoTEntity> entities) {
                 GoTDataBase dataBase = GoTDataBase.getInstance(context);
@@ -59,11 +59,11 @@ public class GoTDataSource {
     }
 
     @NonNull
-    public static void getHouses(@NonNull final Context context, @NonNull final GoTResultsInterface callback) {
+    public static void getHouses(@NonNull final Context context, @NonNull final GoTResults callback) {
         Type listType = new TypeToken<ArrayList<GoTCharacter.GoTHouse>>() {
         }.getType();
 
-        getDataList(listType, GoTListFragment.ListType.Houses, new GoTResultsInterfaceImpl() {
+        getDataList(listType, GoTListFragment.ListType.Houses, new GoTResultsInterface() {
             @Override
             public void onSuccess(List<GoTEntity> entities) {
                 GoTDataBase dataBase = GoTDataBase.getInstance(context);
@@ -79,14 +79,14 @@ public class GoTDataSource {
         });
     }
 
-    private static void getDataList(@NonNull final Type classType, @NonNull final GoTListFragment.ListType entityType, @NonNull final GoTResultsInterface callback) {
+    private static void getDataList(@NonNull final Type classType, @NonNull final GoTListFragment.ListType entityType, @NonNull final GoTResults callback) {
         new Thread(new Runnable() {
 
             @Override
             public void run() {
                 URL obj = null;
                 try {
-                    obj = new URL(apiUrl);
+                    obj = new URL(Constants.API_URL);
                     HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
                     con.setRequestMethod("GET");
                     con.setConnectTimeout(1000);
@@ -137,17 +137,15 @@ public class GoTDataSource {
     }
 
     @Nullable
-    public static void getRandomPlaceholder(String characterName, GoTResultsInterface callback) {
-        String searchUrl1 = "https://www.google.com/search?biw=1871&bih=1289&tbm=isch&sa=1&ei=zE_YXJPyJobF5OUP0O2pqAo&q=";
-        String searchUrl2 = "&gs_l=img.3..0l3j0i67j0l6.4635886.4644329..4644770...0.0..0.474.1043.0j5j4-1......0....1..gws-wiz-img.......0i10i24.rlM5B4Tz-ZU";
+    public static void getRandomPlaceholder(String characterName, GoTResults callback) {
         String name = characterName.replace(" ", "+");
-        String toSearch = searchUrl1 + name + searchUrl2;
+        String toSearch = Constants.IMG_SEARCH_URL1 + name + Constants.IMG_SEARCH_URL2;
 
         getImageUrl(toSearch, callback);
     }
 
     @Nullable
-    private static void getImageUrl(final String url, final GoTResultsInterface callback) {
+    private static void getImageUrl(final String url, final GoTResults callback) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {

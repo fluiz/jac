@@ -10,11 +10,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
-
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.api.GoTDataSource;
-import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -46,7 +44,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
+                    GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterface() {
                         @Override
                         public void onResult(String result) {
                             final Uri uri = Uri.parse(result);

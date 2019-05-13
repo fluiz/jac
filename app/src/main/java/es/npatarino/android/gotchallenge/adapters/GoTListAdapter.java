@@ -14,7 +14,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Callback;
+
 import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.net.URL;
@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import es.npatarino.android.gotchallenge.api.GoTDataSource;
-import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.ui.activities.DetailActivity;
@@ -192,7 +190,7 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         final Picasso picasso = new Picasso.Builder(activity).listener(new Picasso.Listener() {
                             @Override
                             public void onImageLoadFailed(Picasso picasso, Uri uri, Exception e) {
-                                GoTDataSource.getRandomPlaceholder(entityName, new GoTResultsInterfaceImpl() {
+                                GoTDataSource.getRandomPlaceholder(entityName, new GoTResultsInterface() {
                                     @Override
                                     public void onResult(final String result) {
                                         activity.runOnUiThread(new Runnable() {

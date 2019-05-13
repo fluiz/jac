@@ -20,8 +20,8 @@ import java.util.List;
 import es.npatarino.android.gotchallenge.R;
 import es.npatarino.android.gotchallenge.adapters.GoTListAdapter;
 import es.npatarino.android.gotchallenge.api.GoTDataSource;
+import es.npatarino.android.gotchallenge.interfaces.GoTResults;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
-import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
 
@@ -90,7 +90,7 @@ public class GoTListFragment extends Fragment {
         rv.setHasFixedSize(false);
         rv.setAdapter(gotListAdapter);
 
-        GoTResultsInterface gotResultsInterface = new GoTResultsInterfaceImpl() {
+        GoTResults gotResults = new GoTResultsInterface() {
             @Override
             public void onSuccess(List<GoTEntity> entities) {
                 final List<GoTEntity> gotEntities = entities;
@@ -112,9 +112,9 @@ public class GoTListFragment extends Fragment {
         };
 
         if (currentListDisplayed == ListType.Characters) {
-            GoTDataSource.getCharacters(getContext(), gotResultsInterface);
+            GoTDataSource.getCharacters(getContext(), gotResults);
         } else {
-            GoTDataSource.getHouses(getContext(), gotResultsInterface);
+            GoTDataSource.getHouses(getContext(), gotResults);
         }
         getActivity().invalidateOptionsMenu();
     }

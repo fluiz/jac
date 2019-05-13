@@ -123,7 +123,7 @@ public class GoTDataBase extends SQLiteOpenHelper {
                 db.setTransactionSuccessful();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error updating or adding character");
+            Log.e(TAG, "Error updating or adding character entity");
         } finally {
             db.endTransaction();
         }
@@ -162,7 +162,7 @@ public class GoTDataBase extends SQLiteOpenHelper {
                 db.setTransactionSuccessful();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error updating or adding house");
+            Log.e(TAG, "Error updating or adding house entity");
         } finally {
             db.endTransaction();
         }
