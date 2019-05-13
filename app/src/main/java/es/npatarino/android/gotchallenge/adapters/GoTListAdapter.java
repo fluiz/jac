@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import es.npatarino.android.gotchallenge.api.GoTDataSource;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
@@ -128,10 +130,8 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     List<GoTEntity> filterList = new ArrayList<>();
                     for (GoTEntity item : gotEntities) {
                         String name;
-                        String description = "";
                         if (type == GoTListFragment.ListType.Characters) {
                             name = ((GoTCharacter) item).getName();
-                            description = ((GoTCharacter) item).getDescription();
                         } else {
                             name = ((GoTCharacter.GoTHouse) item).getHouseName();
                         }
@@ -177,8 +177,6 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     try {
                         url = GoTEntityUtils.getGoTEntityImage(gotEntity);
                         final Uri uri = Uri.parse(url.toString());
-                        //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
                         final int placeholder;
                         String name;
                         if (type == 1) {
@@ -189,52 +187,40 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             name = ((GoTCharacter.GoTHouse) gotEntity).getHouseName();
                         }
                         final String entityName = name;
-                        GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
+                        final Activity activity = callingFragment.getActivity();
+
+                        final Picasso picasso = new Picasso.Builder(activity).listener(new Picasso.Listener() {
                             @Override
-                            public void onResult(final String result) {
-                                final Activity activity = callingFragment.getActivity();
-                                activity.runOnUiThread(new Runnable() {
+                            public void onImageLoadFailed(Picasso picasso, Uri uri, Exception e) {
+                                GoTDataSource.getRandomPlaceholder(entityName, new GoTResultsInterfaceImpl() {
                                     @Override
-                                    public void run() {
-                                        Picasso.with(activity).load(uri).into(imageView, new Callback() {
+                                    public void onResult(final String result) {
+                                        activity.runOnUiThread(new Runnable() {
                                             @Override
-                                            public void onSuccess() {
-
-                                            }
-
-                                            @Override
-                                            public void onError() {
+                                            public void run() {
                                                 Picasso.with(activity)
-                                                        .load(Uri.parse(result))
+                                                        .load(result)
                                                         .fit()
                                                         .centerCrop()
                                                         .placeholder(placeholder)
                                                         .into(imageView);
                                             }
                                         });
-                                        tvName.setText(entityName);
                                     }
                                 });
                             }
-
+                        }).build();
+                        activity.runOnUiThread(new Runnable() {
                             @Override
-                            public void onFailure() {
-                                final Activity activity = callingFragment.getActivity();
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Picasso.with(activity)
-                                                .load(uri)
-                                                .fit()
-                                                .centerCrop()
-                                                .placeholder(placeholder)
-                                                .into(imageView);
-                                        tvName.setText(entityName);
-                                    }
-                                });
+                            public void run() {
+                                picasso.load(uri)
+                                        .fit()
+                                        .centerCrop()
+                                        .placeholder(placeholder)
+                                        .into(imageView);
+                                tvName.setText(entityName);
                             }
                         });
-
                     } catch (IOException e) {
                         Log.e(TAG, e.getLocalizedMessage());
                     }
