@@ -116,7 +116,6 @@ public class GoTListFragment extends Fragment {
         } else {
             GoTDataSource.getHouses(getContext(), gotResults);
         }
-        getActivity().invalidateOptionsMenu();
     }
 
     @Override

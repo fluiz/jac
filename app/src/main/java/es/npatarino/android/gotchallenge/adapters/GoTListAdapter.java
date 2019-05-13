@@ -3,6 +3,7 @@ package es.npatarino.android.gotchallenge.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,6 +88,9 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     intent.putExtra("name", gotChar.getName());
                     intent.putExtra("imageUrl", gotChar.getImageUrl());
                     gotViewHolder.itemView.getContext().startActivity(intent);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        callingFragment.getActivity().overridePendingTransition(R.anim.bounce, R.anim.bounce);
+                    }
                 }
             };
         } else {
@@ -97,7 +101,10 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     GoTListFragment listFragment = GoTListFragment.newInstance(GoTListFragment.ListType.Characters, gotHouse.getHouseId());
                     FragmentManager cfm = callingFragment.getChildFragmentManager();
                     cfm.popBackStack();
-                    cfm.beginTransaction().add(R.id.fragment_list, listFragment).commitAllowingStateLoss();
+                    cfm.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top)
+                            .add(R.id.fragment_list, listFragment)
+                            .commitAllowingStateLoss();
 
                 }
             };

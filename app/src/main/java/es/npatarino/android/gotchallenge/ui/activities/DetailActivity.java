@@ -2,9 +2,11 @@ package es.npatarino.android.gotchallenge.ui.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +27,9 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         final AppCompatActivity thisActivity = this;
 
+        FrameLayout fl = findViewById(R.id.detail_container);
+        final ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.pb);
+
         final ImageView imageView = (ImageView) findViewById(R.id.iv_photo);
         final TextView tvn = (TextView) findViewById(R.id.tv_name);
         final TextView tvd = (TextView) findViewById(R.id.tv_description);
@@ -43,6 +48,7 @@ public class DetailActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                progressBar.show();
                 try {
                     GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterface() {
                         @Override
@@ -54,6 +60,7 @@ public class DetailActivity extends AppCompatActivity {
                                     Picasso.with(thisActivity).load(uri).placeholder(R.mipmap.got_poster).into(imageView);
                                     tvn.setText(name);
                                     tvd.setText(description);
+                                    progressBar.hide();
                                 }
                             });
                         }
