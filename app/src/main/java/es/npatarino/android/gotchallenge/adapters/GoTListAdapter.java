@@ -169,6 +169,23 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     }
                                 });
                             }
+
+                            @Override
+                            public void onFailure() {
+                                final Activity activity = callingFragment.getActivity();
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Picasso.with(activity)
+                                                .load(uri)
+                                                .fit()
+                                                .centerCrop()
+                                                .placeholder(placeholder)
+                                                .into(imageView);
+                                        tvName.setText(entityName);
+                                    }
+                                });
+                            }
                         });
 
                     } catch (IOException e) {

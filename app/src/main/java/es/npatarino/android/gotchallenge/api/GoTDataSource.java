@@ -1,5 +1,6 @@
 package es.npatarino.android.gotchallenge.api;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -16,7 +17,9 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import es.npatarino.android.gotchallenge.db.GoTDataBase;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterface;
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
 import es.npatarino.android.gotchallenge.ui.fragments.GoTListFragment;
@@ -27,19 +30,45 @@ public class GoTDataSource {
     final private static String apiUrl = "https://project-8424324399725905479.firebaseio.com/characters.json?print=pretty";
 
     @NonNull
-    public static void getCharacters(@NonNull GoTResultsInterface callback) {
+    public static void getCharacters(@NonNull final Context context, @NonNull final GoTResultsInterface callback) {
         Type listType = new TypeToken<ArrayList<GoTCharacter>>() {
         }.getType();
 
-        getDataList(listType, GoTListFragment.ListType.Characters, callback);
+        getDataList(listType, GoTListFragment.ListType.Characters, new GoTResultsInterfaceImpl() {
+            @Override
+            public void onSuccess(List<GoTEntity> entities) {
+                GoTDataBase dataBase = GoTDataBase.getInstance(context);
+                dataBase.saveCharactersList(entities);
+                callback.onSuccess(entities);
+            }
+
+            @Override
+            public void onFailure() {
+                GoTDataBase dataBase = GoTDataBase.getInstance(context);
+                callback.onSuccess(dataBase.getAllCharacters());
+            }
+        });
     }
 
     @NonNull
-    public static void getHouses(@NonNull GoTResultsInterface callback) {
+    public static void getHouses(@NonNull final Context context, @NonNull final GoTResultsInterface callback) {
         Type listType = new TypeToken<ArrayList<GoTCharacter.GoTHouse>>() {
         }.getType();
 
-        getDataList(listType, GoTListFragment.ListType.Houses, callback);
+        getDataList(listType, GoTListFragment.ListType.Houses, new GoTResultsInterfaceImpl() {
+            @Override
+            public void onSuccess(List<GoTEntity> entities) {
+                GoTDataBase dataBase = GoTDataBase.getInstance(context);
+                dataBase.saveHousesList(entities);
+                callback.onSuccess(entities);
+            }
+
+            @Override
+            public void onFailure() {
+                GoTDataBase dataBase = GoTDataBase.getInstance(context);
+                callback.onSuccess(dataBase.getAllHouses());
+            }
+        });
     }
 
     private static void getDataList(@NonNull final Type classType, @NonNull final GoTListFragment.ListType entityType, @NonNull final GoTResultsInterface callback) {
@@ -52,6 +81,7 @@ public class GoTDataSource {
                     obj = new URL(apiUrl);
                     HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
                     con.setRequestMethod("GET");
+                    con.setConnectTimeout(1000);
                     BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                     String inputLine;
                     StringBuffer response = new StringBuffer();

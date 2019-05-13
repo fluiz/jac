@@ -66,7 +66,11 @@ public class GoTEntityUtils {
             @Override
             public void run() {
                 String result = getUrl(url);
-                callback.onResult(result);
+                if (result != null) {
+                    callback.onResult(result);
+                } else {
+                    callback.onFailure();
+                }
             }
         });
     }
@@ -74,27 +78,30 @@ public class GoTEntityUtils {
     @Nullable
     private static String getUrl(String searchQuery) {
         int min = 0;
-        int max = 10;
+        int max = 3;
+        String imgUrl = null;
 
         Document doc = null;
         try {
-            doc = Jsoup.connect(searchQuery).get();
+            doc = Jsoup.connect(searchQuery).timeout(1000).get();
+
+            Elements elemnts = doc.select("img");
+            ArrayList<String> imgs = new ArrayList<>();
+            for (Element el : elemnts) {
+                String candidate = el.attr("data-src");
+                if (!candidate.isEmpty()) {
+                    imgs.add(el.attr("data-src"));
+                }
+                if (imgs.size() >= max) break;
+            }
+            Random ran = new Random();
+            int random = ran.nextInt(imgs.size()-min) + min;
+            imgUrl = imgs.get(random);
+            //Log.i("TAG","Random url: "+ imgUrl);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        Elements elemnts = doc.select("img");
-        ArrayList<String> imgs = new ArrayList<>();
-        for (Element el : elemnts) {
-            String candidate = el.attr("data-src");
-            if (!candidate.isEmpty()) {
-                imgs.add(el.attr("data-src"));
-            }
-            if (imgs.size() >= max) break;
-        }
-        Random ran = new Random();
-        int random = ran.nextInt(imgs.size()-min) + min;
-        String imgUrl = imgs.get(random);
-        //Log.i("TAG","Random url: "+ imgUrl);
         return imgUrl;
     }
 }

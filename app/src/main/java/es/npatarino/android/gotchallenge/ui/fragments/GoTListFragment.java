@@ -101,9 +101,9 @@ public class GoTListFragment extends Fragment {
         };
 
         if (currentListDisplayed == ListType.Characters) {
-            GoTDataSource.getCharacters(gotResultsInterface);
+            GoTDataSource.getCharacters(getContext(), gotResultsInterface);
         } else {
-            GoTDataSource.getHouses(gotResultsInterface);
+            GoTDataSource.getHouses(getContext(), gotResultsInterface);
         }
     }
 }
