@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Callback;
@@ -33,16 +35,18 @@ import es.npatarino.android.gotchallenge.util.GoTEntityUtils;
  * Created by Admin on 15/12/2016.
  */
 
-public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
     GoTListFragment.ListType type;
     Fragment callingFragment;
 
+   private List<GoTEntity> gotEntitiesFiltered;
    private List<GoTEntity> gotEntities;
 
     public GoTListAdapter(GoTListFragment.ListType type, Fragment fragment){
         this.type = type;
         this.callingFragment = fragment;
+        gotEntitiesFiltered = new ArrayList<>();
         gotEntities = new ArrayList<>();
     }
 
@@ -50,6 +54,7 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         for (int i = 0; i < collection.size(); i++) {
             gotEntities.add((GoTEntity) collection.toArray()[i]);
         }
+        gotEntitiesFiltered = gotEntities;
         notifyDataSetChanged();
     }
 
@@ -70,14 +75,14 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final GotViewHolder gotViewHolder = (GotViewHolder) holder;
-        gotViewHolder.render(gotEntities.get(position));
+        gotViewHolder.render(gotEntitiesFiltered.get(position));
         View.OnClickListener listener;
         if (type == GoTListFragment.ListType.Characters) {
             listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(gotViewHolder.itemView.getContext(), DetailActivity.class);
-                    GoTCharacter gotChar = ((GoTCharacter) gotEntities.get(holder.getAdapterPosition()));
+                    GoTCharacter gotChar = ((GoTCharacter) gotEntitiesFiltered.get(holder.getAdapterPosition()));
                     intent.putExtra("description", gotChar.getDescription());
                     intent.putExtra("name", gotChar.getName());
                     intent.putExtra("imageUrl", gotChar.getImageUrl());
@@ -88,7 +93,7 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             listener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    GoTCharacter.GoTHouse gotHouse = (GoTCharacter.GoTHouse) gotEntities.get(holder.getAdapterPosition());
+                    GoTCharacter.GoTHouse gotHouse = (GoTCharacter.GoTHouse) gotEntitiesFiltered.get(holder.getAdapterPosition());
                     GoTListFragment listFragment = GoTListFragment.newInstance(GoTListFragment.ListType.Characters, gotHouse.getHouseId());
                     FragmentManager cfm = callingFragment.getChildFragmentManager();
                     cfm.popBackStack();
@@ -98,17 +103,57 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             };
         }
         gotViewHolder.imageView.setOnClickListener(listener);
-        gotViewHolder.render(gotEntities.get(position));
+        gotViewHolder.render(gotEntitiesFiltered.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return gotEntities.size();
+        return gotEntitiesFiltered.size();
     }
 
     @Override
     public int getItemViewType(int position) {
         return (type == GoTListFragment.ListType.Characters) ? 1 : 0;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    gotEntitiesFiltered = gotEntities;
+                } else {
+                    List<GoTEntity> filterList = new ArrayList<>();
+                    for (GoTEntity item : gotEntities) {
+                        String name;
+                        String description = "";
+                        if (type == GoTListFragment.ListType.Characters) {
+                            name = ((GoTCharacter) item).getName();
+                            description = ((GoTCharacter) item).getDescription();
+                        } else {
+                            name = ((GoTCharacter.GoTHouse) item).getHouseName();
+                        }
+
+                        if (name.toLowerCase().contains(charString.toLowerCase())) {
+                            filterList.add(item);
+                        }
+                    }
+                    gotEntitiesFiltered = filterList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = gotEntitiesFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                gotEntitiesFiltered = (List<GoTEntity>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     class GotViewHolder extends RecyclerView.ViewHolder {

@@ -1,13 +1,17 @@
 package es.npatarino.android.gotchallenge.ui.fragments;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +31,9 @@ public class GoTListFragment extends Fragment {
 
     private static final String TYPE_LIST = "type_list";
     private static final String HOUSE_ID = "house_id";
+
+    private SearchView searchView;
+    private RecyclerView rv;
 
     GoTListAdapter gotListAdapter;
 
@@ -61,8 +68,12 @@ public class GoTListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        getActivity().invalidateOptionsMenu();
+        setHasOptionsMenu(true);
+
+        return view;
     }
 
     @Override
@@ -72,7 +83,7 @@ public class GoTListFragment extends Fragment {
 
         final ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.pb);
 
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv);
+        rv = view.findViewById(R.id.rv);
 
         final GoTListAdapter gotListAdapter = new GoTListAdapter(currentListDisplayed, this);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -105,5 +116,31 @@ public class GoTListFragment extends Fragment {
         } else {
             GoTDataSource.getHouses(getContext(), gotResultsInterface);
         }
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //((GoTListAdapter)rv.getAdapter()).getFilter().filter(query);
+                //gotListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                ((GoTListAdapter)rv.getAdapter()).getFilter().filter(query);
+                //gotListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        super.onPrepareOptionsMenu(menu);
     }
 }

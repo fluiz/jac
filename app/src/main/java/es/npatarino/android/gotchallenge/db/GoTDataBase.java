@@ -20,7 +20,7 @@ public class GoTDataBase extends SQLiteOpenHelper {
 
     // Database info
     private static final String DATABASE_NAME = "GoTDatabase.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static SQLiteDatabase db;
 
     // Table Names
