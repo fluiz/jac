@@ -19,6 +19,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import es.npatarino.android.gotchallenge.api.GoTDataSource;
 import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 import es.npatarino.android.gotchallenge.model.GoTCharacter;
 import es.npatarino.android.gotchallenge.model.GoTEntity;
@@ -142,7 +144,7 @@ public class GoTListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             name = ((GoTCharacter.GoTHouse) gotEntity).getHouseName();
                         }
                         final String entityName = name;
-                        GoTEntityUtils.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
+                        GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
                             @Override
                             public void onResult(final String result) {
                                 final Activity activity = callingFragment.getActivity();

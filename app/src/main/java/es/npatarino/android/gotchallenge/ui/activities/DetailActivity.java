@@ -1,7 +1,5 @@
 package es.npatarino.android.gotchallenge.ui.activities;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +10,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.net.URL;
 
 import es.npatarino.android.gotchallenge.R;
+import es.npatarino.android.gotchallenge.api.GoTDataSource;
+import es.npatarino.android.gotchallenge.interfaces.GoTResultsInterfaceImpl;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -46,21 +45,28 @@ public class DetailActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                URL url = null;
                 try {
-                    url = new URL(imageUrl);
-                    final Uri uri = Uri.parse(url.toString());
-                    //final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    DetailActivity.this.runOnUiThread(new Runnable() {
+                    GoTDataSource.getRandomPlaceholder(name, new GoTResultsInterfaceImpl() {
                         @Override
-                        public void run() {
-                            //imageView.setImageBitmap(bmp);
-                            Picasso.with(thisActivity).load(uri).placeholder(R.mipmap.got_poster).into(imageView);
-                            tvn.setText(name);
-                            tvd.setText(description);
+                        public void onResult(String result) {
+                            final Uri uri = Uri.parse(result);
+                            DetailActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Picasso.with(thisActivity).load(uri).placeholder(R.mipmap.got_poster).into(imageView);
+                                    tvn.setText(name);
+                                    tvd.setText(description);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            super.onFailure();
                         }
                     });
-                } catch (IOException e) {
+
+                } catch (Exception e) {
                     Log.e(TAG, e.getLocalizedMessage());
                 }
             }
