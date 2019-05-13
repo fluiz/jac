@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fmsirvent.ParallaxEverywhere.PEWImageView;
 import com.squareup.picasso.Picasso;
 
 import es.npatarino.android.gotchallenge.R;
@@ -30,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
         FrameLayout fl = findViewById(R.id.detail_container);
         final ContentLoadingProgressBar progressBar = (ContentLoadingProgressBar) findViewById(R.id.pb);
 
-        final ImageView imageView = (ImageView) findViewById(R.id.iv_photo);
+        final PEWImageView imageView = (PEWImageView) findViewById(R.id.iv_photo);
         final TextView tvn = (TextView) findViewById(R.id.tv_name);
         final TextView tvd = (TextView) findViewById(R.id.tv_description);
 

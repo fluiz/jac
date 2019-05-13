@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.DetailActivity"
     android:id="@+id/detail_container"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    xmlns:pew="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,14 +44,23 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    xmlns:pew="http://schemas.android.com/apk/res-auto"
                     >
 
-                    <ImageView
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1">
+                    <com.fmsirvent.ParallaxEverywhere.PEWImageView
                         android:id="@+id/iv_photo"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/detail_header_height"
                         android:scaleType="centerCrop"
+
                         />
+                    </FrameLayout>
 
                 </RelativeLayout>
 
